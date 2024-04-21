@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { User } from '../../types/type';
+import { User } from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/types/type';
 
 const BASE_URL = 'http://localhost:3000/User/';//'https://localhost:7217/api/User/'
 

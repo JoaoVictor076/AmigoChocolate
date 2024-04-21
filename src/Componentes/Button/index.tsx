@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ButtonApp, Title } from './style';
+import { ButtonApp, Title } from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/Componentes/Button/style';
 import { Button, Touchable } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 

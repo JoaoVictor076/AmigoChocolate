@@ -1,33 +1,31 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { StackTypes } from '../../routes/stack';
-import UserService   from '../../services/UserService/UserService';
-import CustomButton from '../../Componentes/Button';
-import { InputLogin } from '../../Componentes/InputLogin/style';
-import PassWordInput from '../../Componentes/Password';
+import { StackTypes } from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/routes/stack';
+import UserService   from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/services/UserService/UserService';
+import CustomButton from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/Componentes/Button';
+import { InputLogin } from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/Componentes/InputLogin/style';
+import PassWordInput from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/Componentes/Password';
 import { ContainerLogin } from './style';
-import { TextInput } from 'react-native-gesture-handler';
-import { InputPassword } from '../../Componentes/Password/style';
-import { Button } from 'react-native';
 
 const Login = () => {
     const [login, setLogin] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const [usernameError, setUsernameError] = useState(false);
+    //const [usernameError, setUsernameError] = useState(false);
   
     const userService = new UserService();
     
     const navigation = useNavigation<StackTypes>();
+    
 
     const handleLogin = async () => {
       const userId = 1;
       navigation.navigate('Home');
       alert(login);
       if (!login) {
-        setUsernameError(true);
+        //setUsernameError(true);
         return;
       } else {
-        setUsernameError(false);
+        //setUsernameError(false);
       }
 
       const isValid = await userService.validateUser(login, password);
@@ -47,20 +45,22 @@ const Login = () => {
   
     return (
       <ContainerLogin>
-        <TextInput  
+        <InputLogin  
           placeholder="Loginx"
           onChangeText={setLogin}
           value={login}
         />
         
-        <InputPassword
+        <PassWordInput
           placeholder="Password"
           onChangeText={setPassword}
           value={password}
         />
-        <Button title='Entrar' onPress={handleLogin}></Button>
+        <CustomButton title='Entrar' onPress={handleLogin}></CustomButton>
         
       </ContainerLogin>
+
+      
     );
   };
   

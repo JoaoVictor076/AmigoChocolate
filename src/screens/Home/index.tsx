@@ -1,12 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Button, Image, View, Platform, Text, TextInput } from 'react-native';
-import { StackTypes } from '../../routes/stack';
+import { StackTypes } from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/routes/stack';
 import * as ImagePicker from 'expo-image-picker';
-import UserService   from '../../services/UserService/UserService';
-import {User} from '../../types/type'
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import CustomButton from '../../Componentes/Button';
+import UserService   from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/services/UserService/UserService';
+import {User} from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/types/type';
+import { TouchableOpacity} from 'react-native-gesture-handler';
+import CustomButton from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/Componentes/Button';
 
 const Home = () => {
     const [image, setImage] = useState('');
@@ -61,11 +61,11 @@ return (
       onChangeText={text => setName(text)}
       value={name}
   />
-  <Button title='Selecionar Imagem' onPress={pickImage}></Button>
+  <CustomButton title='Selecionar Imagem' onPress={pickImage}></CustomButton>
   
   {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 , marginBottom: 10}} />}
   
-  <Button title='Upload' onPress={handleUpload}></Button>
+  <CustomButton title='Upload' onPress={handleUpload}></CustomButton>
 </View>
         
    

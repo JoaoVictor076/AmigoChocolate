@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
-import UserService from '../../services/UserService/UserService';
-import { User } from '../../types/type';
-import { StackRouteProp } from '../../routes/stack';
+import UserService from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/services/UserService/UserService';
+import { User } from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/types/type';
+import { StackRouteProp } from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/routes/stack';
 
 type DetailsScreenProps = {
     route: StackRouteProp<'Details'>;

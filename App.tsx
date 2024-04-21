@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import theme from './src/styles/theme';
-import StackComponent from './src/routes/stack';
+import StackComponent from '../AmigoChocolate/src/routes/stack';
 
 export default function App() {
 
