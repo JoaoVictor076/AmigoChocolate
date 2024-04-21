@@ -1,77 +1,96 @@
+
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { Button, Image, View, Platform, Text, TextInput } from 'react-native';
-import { StackTypes } from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/routes/stack';
-import * as ImagePicker from 'expo-image-picker';
-import UserService   from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/services/UserService/UserService';
-import {User} from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/types/type';
-import { TouchableOpacity} from 'react-native-gesture-handler';
-import CustomButton from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/Componentes/Button';
+import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
+import { StackTypes } from '../../routes/stack';
+import UserService from '../../services/UserService/UserService';
+import { Title } from '../Login/style';
 
 const Home = () => {
-    const [image, setImage] = useState('');
-    const [name, setName] = useState('');
-
-    const pickImage = async () => {
-      // No permissions request is necessary for launching the image library
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
   
-      console.log(result);
+  const userService = new UserService();
   
-      if (!result.canceled) {
-        setImage(result.assets[0].uri);
-      }
-    };
-
-    const userService = new UserService();
-
-    const handleUpload = async () => {
-      try {
-        const user: User = {
-            username: name,
-            password: 'password', // Defina a senha como necessário
-            photo: image
-        };
-
-          const userAdded = await userService.addUser(user);
-          if (userAdded) {
-              console.log('Usuário adicionado com sucesso!');
-          } else {
-              console.log('Erro ao adicionar usuário');
-          }
-      } catch (error) {
-          console.error('Error uploading image:', error);
-      }
-  };
-
-    const navigation = useNavigation<StackTypes>();
-
-return (
+  const navigation = useNavigation<StackTypes>();
   
-       
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-  <Text>Nome:</Text>
-  <TextInput
-      style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10 }}
-      onChangeText={text => setName(text)}
-      value={name}
-  />
-  <CustomButton title='Selecionar Imagem' onPress={pickImage}></CustomButton>
-  
-  {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 , marginBottom: 10}} />}
-  
-  <CustomButton title='Upload' onPress={handleUpload}></CustomButton>
-</View>
-        
-   
+  const handleCriarGrupo = () => {
+    navigation.navigate('CriarGrupo');
+  }
+  const handleListaGrupos = () => {
+    navigation.navigate('ListaGrupos');
+  }
 
-);
-
+  return (
+    <View style={styles.container}>
+      
+    
+      <TouchableOpacity onPress={handleCriarGrupo} style={styles.button} activeOpacity={0.1}>
+        <Text style={styles.buttonText}>Criar Grupo</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleListaGrupos} style={styles.button} activeOpacity={0.1}>
+        <Text style={styles.buttonText}>Listar Grupos</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#8a2be2', // Mesma cor de fundo da tela de Login
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff', // Um azul escuro acinzentado para o título
+    textAlign: 'center',
+    marginTop: 20, // Aumente este valor conforme necessário para descer o texto
+  },
+  input: {
+    width: '80%',
+    height: 50,
+    borderColor: '#D3A46F', // Mesma cor da borda dos inputs da tela de Login
+    backgroundColor: '#FFFAF2', // Mesmo fundo dos inputs da tela de Login
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 20,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    color: '#5C3A21', // Mesma cor do texto dos inputs da tela de Login
+  },
+  button: {
+    width: '80%',
+    height: 50,
+    borderRadius: 20,
+    backgroundColor: '#6600CC', // Mesma cor do botão da tela de Login
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    shadowColor: '#2D2926', // Mesma sombra do botão da tela de Login
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 6,
+  },
+  buttonText: {
+    color: '#FFF7EB', // Mesmo texto do botão da tela de Login
+    fontSize: 18,
+    fontWeight: '600',
+  },
+
+  imageStyle: {
+    width: 120, // Tamanho aumentado para que a imagem seja mais destacada
+    height: 120, // Tamanho aumentado para que a imagem seja mais destacada
+    borderRadius: 60, // Metade da largura/altura para manter a forma circular
+    alignSelf: 'center',
+    marginTop: 5, // Aumente esta margem para diminuir a proximidade com o texto "Login"
+    marginBottom: 20, // Adicionado para dar espaço antes dos campos de entrada
+  },
+
+});
 
 export default Home;

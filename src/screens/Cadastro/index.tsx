@@ -1,60 +1,84 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { StackTypes } from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/routes/stack';
-import UserService   from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/services/UserService/UserService';
-import CustomButton from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/Componentes/Button';
-import { InputLogin } from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/Componentes/InputLogin/style';
-import PassWordInput from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/Componentes/Password';
-import { ContainerLogin } from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/screens/Login/style';
-import { View, TextInput, Button, StyleSheet, Image } from 'react-native';
+import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
+import { StackTypes } from '../../routes/stack';
+import UserService from '../../services/UserService/UserService';
 
-const  Cadastro = () => {
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [login, setLogin] = useState('');
+const Cadastro = () => {
+  const [email, setEmail] = useState<string>('');
+  const [nome, setNome] = useState<string>('');
+  const [sobrenome, setSobrenome] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [usernameError, setUsernameError] = useState(false);
 
   const userService = new UserService();
-    
+
   const navigation = useNavigation<StackTypes>();
-  
+
+  const handleNavegarLogin = () => {
+    navigation.navigate('Login');
+  };
+
+  const handleLogin = async () => {
+
+    const user = await userService.addUser({
+      email,
+      firstName: nome,
+      lastName: sobrenome,
+      password,
+      username: '',
+    });
+
+    if (user) {
+      alert('Usuário autenticado com sucesso ' + nome);
+      setEmail('');
+      setPassword('');
+      setNome('');
+      setSobrenome('');
+    } else {
+      alert('Usuário e/ou senha inválidos');
+    }
+  };
+
   return (
     <View style={styles.container}>
-      {/* Espaço para imagem */}
+      <Text style={styles.title}>Cadastro</Text>
       <Image
-        source={require('./caminho/para/sua/imagem.jpg')}
-        style={styles.imagem}
-        />
+    style={styles.imageStyle}
+    source={require('../../../assets/splash.png')}/>
 
-      {/* Inputs para nome, email, senha e login */}
+
       <TextInput
-        style={styles.input}
+        style={[styles.input, usernameError && styles.errorInput]}
         placeholder="Nome"
-        value={nome}
         onChangeText={setNome}
-        />
+        value={nome}
+      />
       <TextInput
-        style={styles.input}
+        style={[styles.input, usernameError && styles.errorInput]}
+        placeholder="Sobrenome"
+        onChangeText={setSobrenome}
+        value={sobrenome}
+      />
+      <TextInput
+        style={[styles.input, usernameError && styles.errorInput]}
         placeholder="Email"
-        value={email}
         onChangeText={setEmail}
-        />
+        value={email}
+      />
       <TextInput
         style={styles.input}
-        placeholder="Senha"
+        placeholder="Password"
         secureTextEntry={true}
-        value={senha}
-        onChangeText={setSenha}
-        />
-      <TextInput
-        style={styles.input}
-        placeholder="Login"
-        value={login}
-        onChangeText={setLogin}
-        />
-
-      {/* Botão de envio */}
-      <Button title="Enviar" onPress={() => console.log('Enviado!')} />
+        onChangeText={setPassword}
+        value={password}
+      />
+      <TouchableOpacity onPress={handleLogin} style={styles.button} activeOpacity={0.1}>
+        <Text style={styles.buttonText}>Cadastrar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleNavegarLogin} style={styles.button} activeOpacity={0.1}>
+        <Text style={styles.buttonText}>Ir para login</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -64,22 +88,62 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    backgroundColor: '#8a2be2', 
   },
-  imagem: {
-    width: 200,
-    height: 200,
-    marginBottom: 20,
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#fff', // Um azul escuro acinzentado para o título
+    textAlign: 'center',
+    marginTop: 20, // Aumente este valor conforme necessário para descer o texto
   },
   input: {
-    height: 40,
-    width: '100%',
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 10,
-    paddingHorizontal: 10,
+    width: '80%',
+    height: 50,
+    borderColor: '#D3A46F', 
+    backgroundColor: '#FFFAF2', 
+    borderRadius: 10,
+    marginBottom: 20,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    color: '#5C3A21', 
   },
+  errorInput: {
+    borderColor: '#D96C6C', 
+  },
+  button: {
+    width: '80%',
+    height: 50,
+    borderRadius: 20,
+    backgroundColor: '#6600CC', 
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+    shadowColor: '#2D2926', 
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 6,
+  },
+  buttonText: {
+    color: '#FFF7EB', 
+    fontSize: 18,
+    fontWeight: '600',
+  },
+
+  imageStyle: {
+    width: 120, // Tamanho aumentado para que a imagem seja mais destacada
+    height: 120, // Tamanho aumentado para que a imagem seja mais destacada
+    borderRadius: 60, // Metade da largura/altura para manter a forma circular
+    alignSelf: 'center',
+    marginTop: 5, // Aumente esta margem para diminuir a proximidade com o texto "Login"
+    marginBottom: 20, // Adicionado para dar espaço antes dos campos de entrada
+  },
+
+
 });
 
 export default Cadastro;

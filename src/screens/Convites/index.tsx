@@ -4,48 +4,30 @@ import React, { useState } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import UserService from '../../services/UserService/UserService';
+import { Title } from '../Login/style';
 
-const EsqueceuSenha = () => {
-  const [email, setEmail] = useState<string>('');
-
+const Convites = () => {
+  
   const userService = new UserService();
-
+  
   const navigation = useNavigation<StackTypes>();
-
-  const handleNavegarLogin = () => {
-    navigation.navigate('Login');
-  };
-
-  const handleEsqueceuSenha = async () => {
-
-    const user = await userService.forgotPassword(email);
-    
-    if (user) {
-      alert('Email de recuperação de senha enviado com sucesso ');
-    } else {
-      alert('Email inválidos');
-    }
-  };
+  
+  const handleHome = () => {
+    navigation.navigate('Home');
+  }
+  const handleListaGrupos = () => {
+    navigation.navigate('ListaGrupos');
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Esqueceu a senha</Text>
-      <Image
-    style={styles.imageStyle}
-    source={require('../../../assets/splash.png')}
-  />
-
-      <TextInput
-        style={[styles.input]}
-        placeholder="Email"
-        onChangeText={setEmail}
-        value={email}
-      />
-      <TouchableOpacity onPress={handleEsqueceuSenha} style={styles.button} activeOpacity={0.1}>
-        <Text style={styles.buttonText}>Enviar</Text>
+      <Text  style = {styles.title}> Convite</Text>
+    
+      <TouchableOpacity onPress={handleHome} style={styles.button} activeOpacity={0.1}>
+        <Text style={styles.buttonText}>Home</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleNavegarLogin} style={styles.button} activeOpacity={0.1}>
-        <Text style={styles.buttonText}>Ir para login</Text>
+      <TouchableOpacity onPress={handleListaGrupos} style={styles.button} activeOpacity={0.1}>
+        <Text style={styles.buttonText}>Listar Grupos</Text>
       </TouchableOpacity>
     </View>
   );
@@ -71,7 +53,7 @@ const styles = StyleSheet.create({
     borderColor: '#D3A46F', // Mesma cor da borda dos inputs da tela de Login
     backgroundColor: '#FFFAF2', // Mesmo fundo dos inputs da tela de Login
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 20,
     marginBottom: 20,
     paddingHorizontal: 15,
     fontSize: 16,
@@ -111,4 +93,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default EsqueceuSenha;
+export default Convites;
