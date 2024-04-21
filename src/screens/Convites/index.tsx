@@ -1,12 +1,19 @@
 
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, RouteProp  } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import UserService from '../../services/UserService/UserService';
 import { Title } from '../Login/style';
+import Details from '../Details';
 
-const Convites = () => {
+type ParamsType = {
+  Convites: {
+    nome: string;
+  },
+}
+
+const Convites = ({route} : {route: RouteProp<ParamsType, 'Convites'>}) => {
   
   const userService = new UserService();
   
@@ -21,13 +28,15 @@ const Convites = () => {
 
   return (
     <View style={styles.container}>
-      <Text  style = {styles.title}> Convite</Text>
-    
-      <TouchableOpacity onPress={handleHome} style={styles.button} activeOpacity={0.1}>
-        <Text style={styles.buttonText}>Home</Text>
-      </TouchableOpacity>
+      <View style = {styles.styleView}>
+        <Text  style = {styles.title}> Convite</Text>
+        <Text  style = {styles.title}> Você foi convidado a entrar no grupo {route.params.nome}</Text>
+      </View> 
       <TouchableOpacity onPress={handleListaGrupos} style={styles.button} activeOpacity={0.1}>
-        <Text style={styles.buttonText}>Listar Grupos</Text>
+        <Text style={styles.buttonText}>Aceitar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleHome} style={styles.button} activeOpacity={0.1}>
+        <Text style={styles.buttonText}>Recusar</Text>
       </TouchableOpacity>
     </View>
   );
@@ -58,6 +67,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     fontSize: 16,
     color: '#5C3A21', // Mesma cor do texto dos inputs da tela de Login
+  },
+  styleView:{
+    marginBottom : 50,
   },
   button: {
     width: '80%',

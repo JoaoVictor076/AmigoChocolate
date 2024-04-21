@@ -9,13 +9,53 @@ const  CriarGrupo=()=> {
   const [valor, setValor] = useState<string>('')
   const [revelacao, setRevelacao] = useState<string>('')
   const [descricao, setDescricao] = useState<string>('')
+  const [nomeConsole, setNomeConsole] = useState<string>(' ')
+  const [qtdConsole, setQtdConsole] = useState<string>(' ')
+  const [valorConsole, setValorConsole] = useState<string>(' ')
+  const [revelacaoConsole, setRevelacaoConsole] = useState<string>(' ')
+  const [descricaoConsole, setDescricaoConsole] = useState<string>(' ')
   
   
+  const validateForm = () => {
+    let regular = true
+
+    if(nome.length == 0 || nome.length >= 20){
+      setNomeConsole('nome inválido')
+      regular = false
+    }
+    if (parseInt(quantidade) <= 1  || quantidade.length == 0) {
+      setQtdConsole('A quantidade de integrantes deve ser maior que 0')
+      regular = false
+    }
+    if (parseFloat(valor) <= 0 || valor.length == 0){
+      setValorConsole('o valor não pode ser nulo ou igual a 0')
+      regular = false
+    }
+    if (revelacao.length == 0 ){
+      setRevelacaoConsole('A data de revelação não pode ser nula')
+      regular = false
+    }
+    if (descricao.length == 0 ){
+      setDescricaoConsole('A descrição não pode ser nula ')
+      regular = false
+    }
+
+    if(regular){
+      setNome('')
+      setNomeConsole(' ')
+      setQuantidade('')
+      setQtdConsole(' ')
+      setValor('')
+      setValorConsole(' ')
+      setRevelacao('')
+      setRevelacaoConsole(' ')
+      setDescricao('')
+      setDescricaoConsole(' ')
+    }
+  }
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}></Text>
-      </View>
       <Image
       style={styles.imageStyleGroup}
       source={require('/ProjetoVSCode/AmigoChocolate/AmigoChocolate/assets/avatar.png')}
@@ -26,29 +66,34 @@ const  CriarGrupo=()=> {
         onChangeText={setNome} 
         value={nome}
         />
-        <TextInput
-        style={styles.input}
-        placeholder="qtd Max"
-        onChangeText={setQuantidade} 
-        value={quantidade}
+        <Text style={styles.console}>{nomeConsole}</Text>
+          <TextInput
+          style={styles.input}
+          placeholder="qtd Max"
+          onChangeText={setQuantidade} 
+          value={quantidade}
         />
+        <Text style={styles.console}>{qtdConsole}</Text>
         <TextInput style={styles.input} 
         placeholder="valor" 
         onChangeText={setValor} 
         value={valor}
         />
+        <Text style={styles.console}>{valorConsole}</Text>
         <TextInput style={styles.input} 
         placeholder="data revelação" 
         onChangeText={setRevelacao} 
         value={revelacao}
         />
+        <Text style={styles.console}>{revelacaoConsole}</Text>
         <TextInput style={styles.input} 
         placeholder="descrição" 
         onChangeText={setDescricao} 
         value={descricao}
         />
+        <Text style={styles.console}>{descricaoConsole}</Text>
         
-      <TouchableOpacity  style={styles.button} activeOpacity={0.1}>
+      <TouchableOpacity  onPress={validateForm} style={styles.button} activeOpacity={0.1}>
         <Text style={styles.buttonText}> Criar Grupo </Text>
       </TouchableOpacity>
       </View>
@@ -58,8 +103,9 @@ const  CriarGrupo=()=> {
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 20,
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#8a2be2',
     width: '100%'
@@ -96,6 +142,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#fff',
   },
+  console:{
+    color: '#ff0000',
+    marginTop: -16,
+    marginBottom: 10,
+    width: '80%',
+    fontSize: 14,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -126,9 +179,8 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     alignSelf: 'center',
-    marginTop: 5,
-    marginBottom: 20,
   },
 });
+
 
 export default CriarGrupo;

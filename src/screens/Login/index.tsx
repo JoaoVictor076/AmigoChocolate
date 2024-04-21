@@ -52,16 +52,6 @@ const Login = () => {
   const validateForm = () => {
     let regular = true
 
-    if (login.length < 3) {
-      setUserConsole('Usuário deve ter ao menos 3 caracteres')
-      regular = false
-    }
-
-    if (password.length < 5) {
-      setPassConsole('A senha deve ter pelo menos 5 caracteres')
-      regular = false
-    }
-
     return regular
   };
 
@@ -69,7 +59,7 @@ const Login = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text><Image
     style={styles.imageStyle}
-    source={require('../../../assets/splash.png')}
+    source={require('../../../assets/chocopng.png')}
   />
 
       <TextInput

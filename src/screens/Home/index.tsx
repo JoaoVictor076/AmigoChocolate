@@ -5,6 +5,8 @@ import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } fro
 import { StackTypes } from '../../routes/stack';
 import UserService from '../../services/UserService/UserService';
 import { Title } from '../Login/style';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 
 const Home = () => {
   
@@ -24,9 +26,11 @@ const Home = () => {
       
     
       <TouchableOpacity onPress={handleCriarGrupo} style={styles.button} activeOpacity={0.1}>
+      <MaterialCommunityIcons name="account-group-outline" size={50} color="white" />
         <Text style={styles.buttonText}>Criar Grupo</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleListaGrupos} style={styles.button} activeOpacity={0.1}>
+      <MaterialCommunityIcons name="format-list-text" size={45} color="white" />
         <Text style={styles.buttonText}>Listar Grupos</Text>
       </TouchableOpacity>
     </View>
@@ -35,34 +39,25 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   container: {
+    padding: 10,
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#8a2be2', // Mesma cor de fundo da tela de Login
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'flex-start',
+    backgroundColor: '#FFECF9',
+    borderTopLeftRadius: 50,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff', // Um azul escuro acinzentado para o título
+    color: '#FFECF9', // Um azul escuro acinzentado para o título
     textAlign: 'center',
     marginTop: 20, // Aumente este valor conforme necessário para descer o texto
   },
-  input: {
-    width: '80%',
-    height: 50,
-    borderColor: '#D3A46F', // Mesma cor da borda dos inputs da tela de Login
-    backgroundColor: '#FFFAF2', // Mesmo fundo dos inputs da tela de Login
-    borderWidth: 1,
-    borderRadius: 10,
-    marginBottom: 20,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    color: '#5C3A21', // Mesma cor do texto dos inputs da tela de Login
-  },
   button: {
-    width: '80%',
-    height: 50,
-    borderRadius: 20,
+    width: 120,
+    height: 120,
+    borderRadius: 10,
     backgroundColor: '#6600CC', // Mesma cor do botão da tela de Login
     justifyContent: 'center',
     alignItems: 'center',
@@ -77,7 +72,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   buttonText: {
-    color: '#FFF7EB', // Mesmo texto do botão da tela de Login
+    color: '#FFECF9', // Mesmo texto do botão da tela de Login
     fontSize: 18,
     fontWeight: '600',
   },

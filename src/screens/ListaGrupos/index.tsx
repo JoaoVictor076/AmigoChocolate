@@ -37,9 +37,9 @@ const data = {
   ]
 }
 
-type GroupProps = {nomeGrupo: string, dataRevelacao: string, qtdMax: string, descricao: string};
+type GroupProps = {nomeGrupo: string, dataRevelacao: string, qtdMax: string, descricao: string, handleNavegarConvite: (nomeDoGrupo: string) => void, nomeDoGrupo:string};
 
-const GroupProps = ({nomeGrupo,dataRevelacao, qtdMax, descricao}: GroupProps) => (
+const GroupProps = ({nomeGrupo,dataRevelacao, qtdMax, descricao, handleNavegarConvite, nomeDoGrupo}: GroupProps) => (
 
   <View style={styles.nomeGrupocontainer}>
     <Image
@@ -56,7 +56,7 @@ const GroupProps = ({nomeGrupo,dataRevelacao, qtdMax, descricao}: GroupProps) =>
       <TouchableOpacity style={styles.buttonIcon} activeOpacity={0.1}>
         <AntDesign name="edit" size={25} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonIcon} activeOpacity={0.1}>
+      <TouchableOpacity onPress={()=>handleNavegarConvite(nomeDoGrupo)} style={styles.buttonIcon} activeOpacity={0.1}>
         <SimpleLineIcons name="envelope" size={25} color="black" />
       </TouchableOpacity>
     </View>
@@ -74,8 +74,8 @@ const ListaGrupos = () => {
     navigation.navigate('Home');
   }
 
-  const handleNavegarConvite = (nomeDoGrupo: string) => {
-    navigation.navigate('Convites'); 
+  const handleNavegarConvite = (nomeGrupo: string) => {
+    navigation.navigate('Convites', {nome: nomeGrupo} as unknown as undefined); 
   }
 
   return (
@@ -85,7 +85,7 @@ const ListaGrupos = () => {
       <FlatList
         data={data.Grupos}
         renderItem={({item}) => 
-        <GroupProps nomeGrupo={item.nomeGrupo} descricao={item.descricao} dataRevelacao={item.dataRevelacao} qtdMax={item.qtdMax}/>
+        <GroupProps nomeGrupo={item.nomeGrupo} descricao={item.descricao} dataRevelacao={item.dataRevelacao} qtdMax={item.qtdMax} handleNavegarConvite={handleNavegarConvite} nomeDoGrupo={item.nomeGrupo}/>
       }
         keyExtractor={(item) => item.id.toString()}
       />

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import UserService from '../../services/UserService/UserService';
+import Login from '../Login';
 
 const Cadastro = () => {
   const [email, setEmail] = useState<string>('');
@@ -10,6 +11,10 @@ const Cadastro = () => {
   const [sobrenome, setSobrenome] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [usernameError, setUsernameError] = useState(false);
+  const [passConsole, setPassConsole] = useState<string>(' ')
+  const [emailConsole, setEmailConsole] = useState<string>(' ')
+  const [sobrenomeConsole, setSobrenomeConsole] = useState<string>(' ')
+  const [nomeConsole, setNomeConsole] = useState<string>(' ')
 
   const userService = new UserService();
 
@@ -20,13 +25,18 @@ const Cadastro = () => {
   };
 
   const handleLogin = async () => {
-
-    const user = await userService.addUser({
+    if(!validateForm()){
+      return false
+    }
+    
+    navigation.navigate('Login');
+    /*const user = await userService.addUser({
       email,
       firstName: nome,
       lastName: sobrenome,
       password,
       username: '',
+      
     });
 
     if (user) {
@@ -36,8 +46,45 @@ const Cadastro = () => {
       setNome('');
       setSobrenome('');
     } else {
-      alert('Usuário e/ou senha inválidos');
+    };
+    */
+  }
+
+  
+  const validateForm = () => {
+    let regular = true
+
+    const regex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //return regex.test(email);
+    if(!regex.test(email)){
+      setEmailConsole('Email inválido')
+      regular = false
     }
+    if (password.length < 8) {
+      setPassConsole('A senha deve ter pelo menos 8 caracteres')
+      regular = false
+    }
+    if (sobrenome.length == 0){
+      setSobrenomeConsole('O sobrenome não pode ser nulo')
+      regular = false
+    }
+    if (nome.length <= 3){
+      setNomeConsole('O Nome não pode ser nulo')
+      regular = false
+    }
+
+    if(regular){
+      setNome('')
+      setNomeConsole(' ')
+      setSobrenome('')
+      setSobrenomeConsole(' ')
+      setEmail('')
+      setEmailConsole(' ')
+      setPassword('')
+      setPassConsole(' ')
+    }
+    
+    return regular
   };
 
   return (
@@ -45,7 +92,7 @@ const Cadastro = () => {
       <Text style={styles.title}>Cadastro</Text>
       <Image
     style={styles.imageStyle}
-    source={require('../../../assets/splash.png')}/>
+    source={require('../../../assets/chocopng.png')}/>
 
 
       <TextInput
@@ -54,18 +101,22 @@ const Cadastro = () => {
         onChangeText={setNome}
         value={nome}
       />
+      <Text style={styles.console}>{nomeConsole}</Text>
       <TextInput
         style={[styles.input, usernameError && styles.errorInput]}
         placeholder="Sobrenome"
         onChangeText={setSobrenome}
         value={sobrenome}
       />
+      <Text style={styles.console}>{sobrenomeConsole}</Text>
       <TextInput
         style={[styles.input, usernameError && styles.errorInput]}
         placeholder="Email"
         onChangeText={setEmail}
         value={email}
       />
+      <Text style={styles.console}>{emailConsole}</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -73,6 +124,8 @@ const Cadastro = () => {
         onChangeText={setPassword}
         value={password}
       />
+      <Text style={styles.console}>{passConsole}</Text>
+
       <TouchableOpacity onPress={handleLogin} style={styles.button} activeOpacity={0.1}>
         <Text style={styles.buttonText}>Cadastrar</Text>
       </TouchableOpacity>
@@ -133,7 +186,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
   },
-
+  console:{
+    color: '#ff0000',
+    marginTop: -16,
+    marginBottom: 10,
+    width: '80%',
+    fontSize: 14,
+  },
   imageStyle: {
     width: 120, // Tamanho aumentado para que a imagem seja mais destacada
     height: 120, // Tamanho aumentado para que a imagem seja mais destacada

@@ -32,7 +32,12 @@ export default function StackComponent(){
                 <Stack.Screen  name="Login" component={Login}   options={{headerShown: false }}  />
                 <Stack.Screen  name="Cadastro" component={Cadastro}   options={{headerShown: false }}  />
                 <Stack.Screen  name="EsqueceuSenha" component={EsqueceuSenha}   options={{headerShown: false }}  />
-                <Stack.Screen  name="Home" component={Home} />
+                <Stack.Screen  name="Home" component={Home} options={{
+                    headerTintColor: '#fff',
+                    headerStyle:{
+                        backgroundColor: '#6600CC'
+                    }
+                    }}/>
                 <Stack.Screen  name="CriarGrupo" component={CriarGrupo} />
                 <Stack.Screen  name="ListaGrupos" component={ListaGrupos}options={{headerShown: false }} />
                 <Stack.Screen  name="Convites" component={Convites}options={{headerShown: false }} />

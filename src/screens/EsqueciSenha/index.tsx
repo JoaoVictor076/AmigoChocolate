@@ -32,7 +32,7 @@ const EsqueceuSenha = () => {
       <Text style={styles.title}>Esqueceu a senha</Text>
       <Image
     style={styles.imageStyle}
-    source={require('../../../assets/splash.png')}
+    source={require('../../../assets/chocopng.png')}
   />
 
       <TextInput
