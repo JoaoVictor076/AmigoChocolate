@@ -58,7 +58,7 @@ const  CriarGrupo=()=> {
     <View style={styles.container}>
       <Image
       style={styles.imageStyleGroup}
-      source={require('/ProjetoVSCode/AmigoChocolate/AmigoChocolate/assets/avatar.png')}
+      source={require('/AmigoChocolate/AmigoChocolate/assets/avatar.png')}
       />
       <View style={styles.content}>
         <TextInput style={styles.input} 
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   console:{
-    color: '#ff0000',
+    color: '#fff',
     marginTop: -16,
     marginBottom: 10,
     width: '80%',

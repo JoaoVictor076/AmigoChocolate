@@ -1,8 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackTypes } from '../../routes/stack';
 import UserService from '../../services/UserService/UserService';
+import { auth, db, storage } from '/AmigoChocolate/AmigoChocolate/src/Config/'; 
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore'
+import axios from 'axios';
 
 const Login = () => {
   const [login, setLogin] = useState<string>('');
@@ -10,6 +15,9 @@ const Login = () => {
   const [usernameError, setUsernameError] = useState(false);
   const [userConsole, setUserConsole] = useState(' ');
   const [passConsole, setPassConsole] = useState(' ');
+  const [user, setUser] = useState({})
+
+  const URL = 'http://localhost:3000/'
 
   const userService = new UserService();
 
@@ -30,28 +38,65 @@ const Login = () => {
   }
 
   const handleLogin = async () => {
-
-    if (!login) {
-      setUsernameError(true);
-      return;
-    } else {
-      setUsernameError(false);
+    if(!validateForm ()) {
+      return false
     }
+    try{
+      const response = await axios.post(`${URL}api/login`, {
+        email: login,
+        password: password
+      });
 
-    const user = await userService.login(login, password);
-
-    if (user) {
-      alert('Usuário autenticado com sucesso ' + user.username);
-      setLogin('');
-      setPassword('');
-    } else {
-      alert('Usuário e/ou senha inválidos');
+      if (response.status === 200) {
+        const data = response.data;
+        storageUser(data);
+        console.log('Cadastro realizado com sucesso!', `ID do usuário: ${data.uid}, Nome: ${data.name}, Email: ${data.email}`);
+        handleNavegarHome()
+      } else {
+        console.log('Credenciais inválidas');
+      }
     }
-  };
+    catch(error: any){
+      console.log('Erro ao fazer login', error.message);
+    }
+  }; 
+
+  async function storageUser(data: any){
+    const expirationTime = new Date().getTime() + 1 * 24 * 60 * 60 * 1000
+    const userData = {
+      ...data,
+      expirationTime
+    };
+
+    try{
+      await AsyncStorage.setItem('@user', JSON.stringify(userData));
+      setUser(userData);
+      handleNavegarHome()
+    } catch(error: any){
+      console.log('Erro ao salvar o usuário ' + error)
+    };
+  }
 
   const validateForm = () => {
     let regular = true
 
+    const regex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //return regex.test(email);
+    if(!regex.test(login)){
+      setUserConsole('Email inválido')
+      regular = false
+    }
+    if (password.length < 8) {
+      setPassConsole('A senha deve ter pelo menos 8 caracteres')
+      regular = false
+    }
+    
+    if(regular){
+      setLogin('')
+      setUserConsole(' ')
+      setPassword('')
+      setPassConsole(' ')
+    }
     return regular
   };
 
@@ -79,7 +124,7 @@ const Login = () => {
       />
       <Text style={styles.console}>{passConsole}</Text>
       
-      <TouchableOpacity onPress={handleNavegarHome} style={styles.button} activeOpacity={0.1}>
+      <TouchableOpacity onPress={handleLogin} style={styles.button} activeOpacity={0.1}>
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleNavegarCadastro} style={styles.button} activeOpacity={0.1}>
@@ -156,11 +201,11 @@ const styles = StyleSheet.create({
   },
 
   console:{
-    color: '#ff0000',
-    marginBottom: 20,
+    color: '#fffd58',
+    marginBottom: 10,
     width: '80%',
-    fontSize: 15,
-  }
+    fontSize: 14,
+  },
   
 });
 

@@ -1,9 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import UserService from '../../services/UserService/UserService';
 import Login from '../Login';
+import axios from 'axios';
 
 const Cadastro = () => {
   const [email, setEmail] = useState<string>('');
@@ -15,6 +17,9 @@ const Cadastro = () => {
   const [emailConsole, setEmailConsole] = useState<string>(' ')
   const [sobrenomeConsole, setSobrenomeConsole] = useState<string>(' ')
   const [nomeConsole, setNomeConsole] = useState<string>(' ')
+  const [user, setUser] = useState({})
+
+  const URL = 'http://localhost:3000/'
 
   const userService = new UserService();
 
@@ -24,32 +29,47 @@ const Cadastro = () => {
     navigation.navigate('Login');
   };
 
-  const handleLogin = async () => {
+  const handleSignUp = async () => {
     if(!validateForm()){
       return false
     }
-    
-    navigation.navigate('Login');
-    /*const user = await userService.addUser({
-      email,
-      firstName: nome,
-      lastName: sobrenome,
-      password,
-      username: '',
-      
-    });
+  
+    try{
+      const response = await axios.post(`${URL}api/signUpUser`, {
+        nome: nome,
+        sobrenome: sobrenome,
+        email: email,
+        password: password,
+        avatarUrl: null
+      })
 
-    if (user) {
-      alert('Usuário autenticado com sucesso ' + nome);
-      setEmail('');
-      setPassword('');
-      setNome('');
-      setSobrenome('');
-    } else {
-    };
-    */
+      if(response.status === 201){
+        const data = response.data;
+        storageUser(data);
+        setUser(data);
+      } else {
+        console.log(`Erro ao cadastrar o usuário`)
+      }
+    } catch(error: any){
+      console.log('Erro ao cadastrar o usuário ' + error)
+    }
   }
 
+  async function storageUser(data: any){
+    const expirationTime = new Date().getTime() + 1 * 24 * 60 * 60 * 1000
+    const userData = {
+      ...data,
+      expirationTime
+    };
+
+    try{
+      await AsyncStorage.setItem('@user', JSON.stringify(userData));
+      setUser(userData);
+      handleNavegarLogin()
+    } catch(error: any){
+      console.log('Erro ao salvar o usuário ' + error)
+    };
+  }
   
   const validateForm = () => {
     let regular = true
@@ -126,7 +146,7 @@ const Cadastro = () => {
       />
       <Text style={styles.console}>{passConsole}</Text>
 
-      <TouchableOpacity onPress={handleLogin} style={styles.button} activeOpacity={0.1}>
+      <TouchableOpacity onPress={handleSignUp} style={styles.button} activeOpacity={0.1}>
         <Text style={styles.buttonText}>Cadastrar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleNavegarLogin} style={styles.button} activeOpacity={0.1}>
@@ -187,7 +207,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   console:{
-    color: '#ff0000',
+    color: '#fff',
     marginTop: -16,
     marginBottom: 10,
     width: '80%',
