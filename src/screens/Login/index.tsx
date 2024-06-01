@@ -3,10 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackTypes } from '../../routes/stack';
-import UserService from '../../services/UserService/UserService';
-import { auth, db, storage } from '/AmigoChocolate/AmigoChocolate/src/Config/'; 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import UserService from '../../services/UserService/UserService'; 
 import axios from 'axios';
 
 const Login = () => {

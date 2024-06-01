@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Button, Image,TouchableOpacity } from 
 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const  CriarGrupo=()=> {
   
@@ -14,7 +16,41 @@ const  CriarGrupo=()=> {
   const [valorConsole, setValorConsole] = useState<string>(' ')
   const [revelacaoConsole, setRevelacaoConsole] = useState<string>(' ')
   const [descricaoConsole, setDescricaoConsole] = useState<string>(' ')
-  
+  const [adminUid, setadminUid] = useState('')
+
+  const URL = 'http://localhost:3000/';
+
+
+  const handleCriarGrupo = async () => {
+    try {
+      const response = await axios.post(`${URL}groups/groupRegister`, {
+        nome,
+        qtdMax: quantidade,
+        valor,
+        dataRevelacao: revelacao,
+        descricao,
+        adminUid, 
+        participantes: {adminUid}
+      });
+
+      if (response.status === 200) {
+        console.log('Grupo criado com sucesso!');
+      } else {
+        console.log('Erro ao criar grupo:', response.data);
+      }
+    } catch (error: any) {
+      console.log('Erro ao criar grupo:', error.message);
+    }
+  };
+
+  function userLoggedIn(){
+    AsyncStorage.getItem('@user').then((value) => {
+      if (value !== null) {
+        const user = JSON.parse(value)
+        setadminUid(user.uid)
+      }
+    });
+  }
   
   const validateForm = () => {
     let regular = true
@@ -53,6 +89,10 @@ const  CriarGrupo=()=> {
       setDescricaoConsole(' ')
     }
   }
+
+  useEffect(() => {
+    userLoggedIn()
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -93,7 +133,7 @@ const  CriarGrupo=()=> {
         />
         <Text style={styles.console}>{descricaoConsole}</Text>
         
-      <TouchableOpacity  onPress={validateForm} style={styles.button} activeOpacity={0.1}>
+      <TouchableOpacity  onPress={handleCriarGrupo} style={styles.button} activeOpacity={0.1}>
         <Text style={styles.buttonText}> Criar Grupo </Text>
       </TouchableOpacity>
       </View>

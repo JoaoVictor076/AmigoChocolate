@@ -4,9 +4,11 @@ import React, { useState } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import UserService from '../../services/UserService/UserService';
+import axios from 'axios'
 
 const EsqueceuSenha = () => {
   const [email, setEmail] = useState<string>('');
+  const URL = 'http://localhost:3000/'
 
   const userService = new UserService();
 
@@ -16,16 +18,28 @@ const EsqueceuSenha = () => {
     navigation.navigate('Login');
   };
 
-  const handleEsqueceuSenha = async () => {
-
-    const user = await userService.forgotPassword(email);
-    
-    if (user) {
-      alert('Email de recuperação de senha enviado com sucesso ');
-    } else {
-      alert('Email inválidos');
+  const handleRecoverPassword = async () => {
+    if(!email){
+      console.log('email is required')
+      return false;
     }
-  };
+
+    try {
+      const response = await axios.post(`${URL}api/recoverPassword`, {
+        email: email,
+      });
+      
+      if(response.status === 200) {
+        const data = response.data;
+        console.log(data);
+        handleNavegarLogin();
+      } else {
+        console.log('Erro ao recuperar senha: ', response.data);
+      }
+    } catch (error: any) {
+      console.log(error.message)
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -41,7 +55,7 @@ const EsqueceuSenha = () => {
         onChangeText={setEmail}
         value={email}
       />
-      <TouchableOpacity onPress={handleEsqueceuSenha} style={styles.button} activeOpacity={0.1}>
+      <TouchableOpacity onPress={handleRecoverPassword} style={styles.button} activeOpacity={0.1}>
         <Text style={styles.buttonText}>Enviar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleNavegarLogin} style={styles.button} activeOpacity={0.1}>

@@ -31,18 +31,6 @@ class UserService {
       return undefined;
     }
   }
-
-  async forgotPassword(email: string): Promise<boolean> {
-    try {
-      const response = await axios.post(`${BASE_URL}/auth/forgot-password`, {
-        email,
-      });
-      return true; // Retorna true se o email foi enviado com sucesso
-    } catch (error) {
-      console.error('Erro ao enviar email de recuperação de senha:', error);
-      return false; // Retorna false em caso de erro
-    }
-  }
 }
 
 export default UserService;
