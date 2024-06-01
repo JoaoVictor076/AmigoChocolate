@@ -1,17 +1,21 @@
 
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { StackTypes } from '../../routes/stack';
 import UserService from '../../services/UserService/UserService';
 import { Title } from '../Login/style';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import  { signOut } from 'firebase/auth'
+import { auth } from '../../Config'
 
 
 const Home = () => {
   
   const userService = new UserService();
-  
+  const [user, setUser] = useState({})
   const navigation = useNavigation<StackTypes>();
   
   const handleCriarGrupo = () => {
@@ -20,6 +24,19 @@ const Home = () => {
   const handleListaGrupos = () => {
     navigation.navigate('ListaGrupos');
   }
+
+  const handleLogout = useCallback(async () => {
+    await signOut(auth)
+    .then(()=>{
+      AsyncStorage.removeItem('@user');
+      navigation.navigate('Login');
+      return true;
+    })
+    .catch((error) => {
+      console.log(error);
+      return false
+    })
+  }, [navigation])
 
   return (
     <View style={styles.container}>
@@ -30,8 +47,12 @@ const Home = () => {
         <Text style={styles.buttonText}>Criar Grupo</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleListaGrupos} style={styles.button} activeOpacity={0.1}>
-      <MaterialCommunityIcons name="format-list-text" size={45} color="white" />
+        <MaterialCommunityIcons name="format-list-text" size={45} color="white" />
         <Text style={styles.buttonText}>Listar Grupos</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={handleLogout} style={styles.button} activeOpacity={0.1}>
+        <MaterialIcons name="logout" size={40} color="white" />
+        <Text style={styles.buttonText}>Sair</Text>
       </TouchableOpacity>
     </View>
   );

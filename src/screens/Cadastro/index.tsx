@@ -12,12 +12,12 @@ const Cadastro = () => {
   const [nome, setNome] = useState<string>('');
   const [sobrenome, setSobrenome] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [usernameError, setUsernameError] = useState(false);
   const [passConsole, setPassConsole] = useState<string>(' ')
   const [emailConsole, setEmailConsole] = useState<string>(' ')
   const [sobrenomeConsole, setSobrenomeConsole] = useState<string>(' ')
   const [nomeConsole, setNomeConsole] = useState<string>(' ')
   const [user, setUser] = useState({})
+  const [loading, setloading] = useState(false)
 
   const URL = 'http://localhost:3000/'
 
@@ -32,6 +32,7 @@ const Cadastro = () => {
   const handleSignUp = async () => {
     if(!validateForm()){
       return false
+      setloading(false)
     }
   
     try{
@@ -48,11 +49,12 @@ const Cadastro = () => {
         storageUser(data);
         setUser(data);
       } else {
-        console.log(`Erro ao cadastrar o usuário`)
+        setNomeConsole(`Erro ao cadastrar o usuário`)
       }
     } catch(error: any){
-      console.log('Erro ao cadastrar o usuário ' + error)
+      setNomeConsole('Erro ao cadastrar o usuário ' + error)
     }
+    setloading(false)
   }
 
   async function storageUser(data: any){
@@ -67,12 +69,13 @@ const Cadastro = () => {
       setUser(userData);
       handleNavegarLogin()
     } catch(error: any){
-      console.log('Erro ao salvar o usuário ' + error)
+      setNomeConsole('Erro ao salvar o usuário ' + error)
     };
   }
   
   const validateForm = () => {
     let regular = true
+    setloading(true)
 
     const regex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     //return regex.test(email);
@@ -102,6 +105,7 @@ const Cadastro = () => {
       setEmailConsole(' ')
       setPassword('')
       setPassConsole(' ')
+      setloading(false)
     }
     
     return regular
@@ -116,21 +120,21 @@ const Cadastro = () => {
 
 
       <TextInput
-        style={[styles.input, usernameError && styles.errorInput]}
+        style={[styles.input]}
         placeholder="Nome"
         onChangeText={setNome}
         value={nome}
       />
       <Text style={styles.console}>{nomeConsole}</Text>
       <TextInput
-        style={[styles.input, usernameError && styles.errorInput]}
+        style={[styles.input]}
         placeholder="Sobrenome"
         onChangeText={setSobrenome}
         value={sobrenome}
       />
       <Text style={styles.console}>{sobrenomeConsole}</Text>
       <TextInput
-        style={[styles.input, usernameError && styles.errorInput]}
+        style={[styles.input]}
         placeholder="Email"
         onChangeText={setEmail}
         value={email}
@@ -147,7 +151,7 @@ const Cadastro = () => {
       <Text style={styles.console}>{passConsole}</Text>
 
       <TouchableOpacity onPress={handleSignUp} style={styles.button} activeOpacity={0.1}>
-        <Text style={styles.buttonText}>Cadastrar</Text>
+        <Text style={styles.buttonText}>{loading ? 'Carregando...' :'Cadastrar'}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleNavegarLogin} style={styles.button} activeOpacity={0.1}>
         <Text style={styles.buttonText}>Ir para login</Text>

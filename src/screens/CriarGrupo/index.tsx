@@ -22,6 +22,10 @@ const  CriarGrupo=()=> {
 
 
   const handleCriarGrupo = async () => {
+    if(!validateForm()){
+      return false;
+    }
+      
     try {
       const response = await axios.post(`${URL}groups/groupRegister`, {
         nome,
@@ -30,7 +34,7 @@ const  CriarGrupo=()=> {
         dataRevelacao: revelacao,
         descricao,
         adminUid, 
-        participantes: {adminUid}
+        participantes: [adminUid]
       });
 
       if (response.status === 200) {
@@ -88,6 +92,8 @@ const  CriarGrupo=()=> {
       setDescricao('')
       setDescricaoConsole(' ')
     }
+
+    return regular;
   }
 
   useEffect(() => {

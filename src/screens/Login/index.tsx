@@ -6,18 +6,21 @@ import { StackTypes } from '../../routes/stack';
 import UserService from '../../services/UserService/UserService'; 
 import axios from 'axios';
 
+interface User{
+  uid: string;
+  name: string;
+  email: string;
+}
+
 const Login = () => {
   const [login, setLogin] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [usernameError, setUsernameError] = useState(false);
   const [userConsole, setUserConsole] = useState(' ');
   const [passConsole, setPassConsole] = useState(' ');
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const URL = 'http://localhost:3000/'
-
-  const userService = new UserService();
-
   const navigation = useNavigation<StackTypes>();
 
   const handleNavegarCadastro = () => {
@@ -29,16 +32,16 @@ const Login = () => {
   }
 
   const handleNavegarHome = () =>{
-    if(validateForm()){
-      navigation.navigate('Home');
-    }
+    navigation.navigate('Home');
   }
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: any) => {
+    e.preventDefault();
     if(!validateForm ()) {
-      return false
+      return false;
     }
     try{
+      setLoading(true);
       const response = await axios.post(`${URL}api/login`, {
         email: login,
         password: password
@@ -47,14 +50,14 @@ const Login = () => {
       if (response.status === 200) {
         const data = response.data;
         storageUser(data);
-        console.log('Cadastro realizado com sucesso!', `ID do usuário: ${data.uid}, Nome: ${data.name}, Email: ${data.email}`);
         handleNavegarHome()
       } else {
-        console.log('Credenciais inválidas');
-      }
+        setUserConsole('Credenciais inválidas');
+      };
+      setLoading(false);
     }
     catch(error: any){
-      console.log('Erro ao fazer login', error.message);
+      setUserConsole('Erro ao fazer login: ' + error.message);
     }
   }; 
 
@@ -70,21 +73,24 @@ const Login = () => {
       setUser(userData);
       handleNavegarHome()
     } catch(error: any){
-      console.log('Erro ao salvar o usuário ' + error)
+      setUserConsole('Erro ao salvar o usuário ' + error)
     };
   }
 
   const validateForm = () => {
     let regular = true
+    setLoading(true);
 
     const regex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     //return regex.test(email);
     if(!regex.test(login)){
       setUserConsole('Email inválido')
+      setLoading(false);
       regular = false
     }
     if (password.length < 8) {
       setPassConsole('A senha deve ter pelo menos 8 caracteres')
+      setLoading(false);
       regular = false
     }
     
@@ -97,6 +103,27 @@ const Login = () => {
     return regular
   };
 
+  function userLoggedIn(){
+    AsyncStorage.getItem('@user').then((value) => {
+      if (value) {
+        const user = JSON.parse(value)
+        setUser(user)
+      } else {
+        setUser(null)
+      }
+    });
+  }
+
+  useEffect(() => {
+    userLoggedIn();
+  }, []);
+
+  useEffect(() => {
+    if (!!user && user != null) {
+      handleNavegarHome();
+    }
+  }, [user]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text><Image
@@ -105,7 +132,7 @@ const Login = () => {
   />
 
       <TextInput
-        style={[styles.input, usernameError && styles.errorInput]} // Aplicar estilo de erro se usernameError for true
+        style={[styles.input]} // Aplicar estilo de erro se usernameError for true
         placeholder="Login"
         onChangeText={setLogin}
         value={login}
@@ -122,14 +149,14 @@ const Login = () => {
       <Text style={styles.console}>{passConsole}</Text>
       
       <TouchableOpacity onPress={handleLogin} style={styles.button} activeOpacity={0.1}>
-        <Text style={styles.buttonText}>Entrar</Text>
+        <Text style={styles.buttonText}>{loading ? 'Carregando...' : 'Entrar'}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleNavegarCadastro} style={styles.button} activeOpacity={0.1}>
         <Text style={styles.buttonText}>Ir para cadastro</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleNavegarEsqueceuSenha} style={styles.button} activeOpacity={0.1}>
-        <Text style={styles.buttonText}>Esqueceu a senha?</Text>
-      </TouchableOpacity>
+
+      <Text onPress={handleNavegarEsqueceuSenha} style={ styles.refEsqueciSenha }>Esqueceu a senha?</Text>
+        
     </View>
   );
 };
@@ -203,7 +230,12 @@ const styles = StyleSheet.create({
     width: '80%',
     fontSize: 14,
   },
-  
+  refEsqueciSenha :{
+      marginTop: 50,
+      color: '#FFF7EB',
+      fontSize: 18,
+      fontWeight: '600',
+  },
 });
 
 
