@@ -3,7 +3,6 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState, useCallback, useEffect } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { StackTypes } from '../../routes/stack';
-import UserService from '../../services/UserService/UserService';
 import { Title } from '../Login/style';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -14,7 +13,6 @@ import { auth } from '../../Config'
 
 const Home = () => {
   
-  const userService = new UserService();
   const [user, setUser] = useState({})
   const navigation = useNavigation<StackTypes>();
   

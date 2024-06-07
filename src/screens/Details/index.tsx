@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+/*import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import UserService from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/services/UserService/UserService';
 import { User } from '/ProjetoVSCode/AmigoChocolate/AmigoChocolate/src/types/type';
@@ -19,7 +19,6 @@ const Details = ({ route }: DetailsScreenProps) => {
         // Função assíncrona para buscar o usuário pelo ID
         const fetchUser = async () => {
             try {
-               
                 // Chamada ao método getUserById passando o ID do usuário desejado
                 const fetchedUser : User = await userService.getUserById(route.params.userId);
                 if (fetchedUser != null && Array.isArray(fetchedUser)) {                
@@ -32,7 +31,7 @@ const Details = ({ route }: DetailsScreenProps) => {
                 setError('Erro ao buscar usuário. Tente novamente mais tarde.'); // Define mensagem de erro
             } finally {
                // Define que o carregamento terminou
-               setLoading(false);
+                setLoading(false);
             }
         };
 
@@ -60,4 +59,4 @@ const Details = ({ route }: DetailsScreenProps) => {
     );
 };
 
-export default Details;
+export default Details;*/

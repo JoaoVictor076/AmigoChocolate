@@ -3,7 +3,6 @@ import { useNavigation, RouteProp  } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { StackTypes } from '../../routes/stack';
-import UserService from '../../services/UserService/UserService';
 import { Title } from '../Login/style';
 import Details from '../Details';
 
@@ -14,8 +13,6 @@ type ParamsType = {
 }
 
 const Convites = ({route} : {route: RouteProp<ParamsType, 'Convites'>}) => {
-  
-  const userService = new UserService();
   
   const navigation = useNavigation<StackTypes>();
   

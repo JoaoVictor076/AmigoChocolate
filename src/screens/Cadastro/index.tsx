@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { StackTypes } from '../../routes/stack';
-import UserService from '../../services/UserService/UserService';
 import Login from '../Login';
 import axios from 'axios';
 
@@ -20,8 +19,6 @@ const Cadastro = () => {
   const [loading, setloading] = useState(false)
 
   const URL = 'http://localhost:3000/'
-
-  const userService = new UserService();
 
   const navigation = useNavigation<StackTypes>();
 

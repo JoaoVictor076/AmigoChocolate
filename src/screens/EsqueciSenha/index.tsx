@@ -3,14 +3,11 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { StackTypes } from '../../routes/stack';
-import UserService from '../../services/UserService/UserService';
 import axios from 'axios'
 
 const EsqueceuSenha = () => {
   const [email, setEmail] = useState<string>('');
   const URL = 'http://localhost:3000/'
-
-  const userService = new UserService();
 
   const navigation = useNavigation<StackTypes>();
 

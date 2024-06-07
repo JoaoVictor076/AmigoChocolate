@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { StackTypes } from '../../routes/stack';
 import { View, Text, TextInput, StyleSheet, Button, Image,TouchableOpacity } from 
 'react-native';
 import axios from 'axios';
@@ -20,6 +22,11 @@ const  CriarGrupo=()=> {
 
   const URL = 'http://localhost:3000/';
 
+  const navigation = useNavigation<StackTypes>();
+
+  const handleNavegarLogin = () => {
+    navigation.navigate('Home');
+  };
 
   const handleCriarGrupo = async () => {
     if(!validateForm()){
@@ -39,6 +46,7 @@ const  CriarGrupo=()=> {
 
       if (response.status === 200) {
         console.log('Grupo criado com sucesso!');
+        handleNavegarLogin()
       } else {
         console.log('Erro ao criar grupo:', response.data);
       }
