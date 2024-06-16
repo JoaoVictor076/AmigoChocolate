@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StackTypes } from '../../routes/stack';
-import { View, Text, TextInput, StyleSheet, Button, Image,TouchableOpacity } from 
+import { View, Text, TextInput, StyleSheet, Button, Image,TouchableOpacity, Platform  } from 
 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -19,6 +20,7 @@ const  CriarGrupo=()=> {
   const [revelacaoConsole, setRevelacaoConsole] = useState<string>(' ')
   const [descricaoConsole, setDescricaoConsole] = useState<string>(' ')
   const [adminUid, setadminUid] = useState('')
+  const [image, setImage] = useState<string | null>(null)
 
   const URL = 'http://localhost:3000/';
 
@@ -32,7 +34,7 @@ const  CriarGrupo=()=> {
     if(!validateForm()){
       return false;
     }
-      
+    
     try {
       const response = await axios.post(`${URL}groups/groupRegister`, {
         nome,
@@ -41,7 +43,8 @@ const  CriarGrupo=()=> {
         dataRevelacao: revelacao,
         descricao,
         adminUid, 
-        participantes: [adminUid]
+        participantes: [adminUid],
+        image
       });
 
       if (response.status === 200) {
@@ -63,6 +66,16 @@ const  CriarGrupo=()=> {
       }
     });
   }
+  function isDateGreaterOrEqual(dateStr:string) {
+    const [day, month, year] = dateStr.split('/').map(Number);
+
+    const inputDate = new Date(year, month - 1, day); 
+
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    return inputDate >= currentDate;
+    
+  }    
   
   const validateForm = () => {
     let regular = true
@@ -79,8 +92,20 @@ const  CriarGrupo=()=> {
       setValorConsole('o valor não pode ser nulo ou igual a 0')
       regular = false
     }
+
+    
     if (revelacao.length == 0 ){
       setRevelacaoConsole('A data de revelação não pode ser nula')
+      regular = false
+      }
+    const regex:RegExp = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(19|20)\d{2}$/;
+    
+    if(!regex.test(revelacao)){
+      setRevelacaoConsole('Data inválida')
+      regular = false
+    }
+    if(!isDateGreaterOrEqual(revelacao)){
+      setRevelacaoConsole('Aquela data já faz parte do passado; é hora de olhar para frente e escolher uma data futura.')
       regular = false
     }
     if (descricao.length == 0 ){
@@ -104,16 +129,34 @@ const  CriarGrupo=()=> {
     return regular;
   }
 
+  const pickImage = async () => {
+    if (Platform.OS === 'web') {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Desculpe, precisamos da permissão para acessar a galeria!');
+        return;
+      }
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
   useEffect(() => {
     userLoggedIn()
   }, [])
 
   return (
     <View style={styles.container}>
-      <Image
-      style={styles.imageStyleGroup}
-      source={require('/AmigoChocolate/AmigoChocolate/assets/avatar.png')}
-      />
+      {image ? <Image source={{ uri: image }} style={styles.imageStyleGroup}/> :  <Image source={require('/AmigoChocolate/AmigoChocolate/assets/avatar.png')} style={styles.imageStyleGroup}/>}
       <View style={styles.content}>
         <TextInput style={styles.input} 
         placeholder="Nome" 
@@ -146,6 +189,9 @@ const  CriarGrupo=()=> {
         value={descricao}
         />
         <Text style={styles.console}>{descricaoConsole}</Text>
+        <TouchableOpacity onPress={pickImage} style={styles.button}>
+          <Text style={styles.buttonText}> Selecionar Imagem </Text>
+        </TouchableOpacity>
         
       <TouchableOpacity  onPress={handleCriarGrupo} style={styles.button} activeOpacity={0.1}>
         <Text style={styles.buttonText}> Criar Grupo </Text>

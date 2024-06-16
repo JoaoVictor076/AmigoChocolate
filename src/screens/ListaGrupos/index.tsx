@@ -17,28 +17,51 @@ type GroupProps = {
   dataRevelacao: string, 
   qtdMax: string, 
   descricao: string, 
-  handleNavegarConvite: (nomeDoGrupo: string) => void, 
-  nomeDoGrupo: string
+  handleNavegarConvite: (nomeDoGrupo: string, groupId: string) => void, 
+  handleNavegarParticipantes:(groupId: string) => void, 
+  nomeDoGrupo: string,
+  image: string,
+  groupId: string
 };
 
-const GroupComponent = ({ nomeGrupo, dataRevelacao, qtdMax, descricao, handleNavegarConvite, nomeDoGrupo }: GroupProps) => (
+const GroupComponent: React.FC<GroupProps> = ({
+  groupId,
+  nomeGrupo,
+  dataRevelacao,
+  qtdMax,
+  descricao,
+  handleNavegarConvite,
+  nomeDoGrupo,
+  image,
+  handleNavegarParticipantes,
+}) => (
   <View style={styles.nomeGrupocontainer}>
-    <Image
-      style={styles.imageStyle}
-      source={require('../../../assets/avatar.png')}
-    />
+    <Image style={styles.imageStyle} source={{ uri: image }} />
     <View style={styles.grupo}>
       <Text style={styles.nomeGrupo}>{nomeGrupo}</Text>
-      <Text><Text style={styles.text}>Descrição:</Text> {descricao}</Text>
-      <Text><Text style={styles.text}>Data Revelação:</Text> {dataRevelacao}</Text>
-      <Text><Text style={styles.text}>Quantidade Max:</Text> {qtdMax}</Text>
+      <Text>
+        <Text style={styles.text}>Descrição:</Text> {descricao}
+      </Text>
+      <Text>
+        <Text style={styles.text}>Data Revelação:</Text> {dataRevelacao}
+      </Text>
+      <Text>
+        <Text style={styles.text}>Quantidade Max:</Text> {qtdMax}
+      </Text>
     </View>
     <View>
       <TouchableOpacity style={styles.buttonIcon} activeOpacity={0.1}>
         <AntDesign name="edit" size={25} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => handleNavegarConvite(nomeDoGrupo)} style={styles.buttonIcon} activeOpacity={0.1}>
+      <TouchableOpacity
+        onPress={() => handleNavegarConvite(nomeDoGrupo, groupId)}
+        style={styles.buttonIcon}
+        activeOpacity={0.1}
+      >
         <SimpleLineIcons name="envelope" size={25} color="black" />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => handleNavegarParticipantes(groupId)} style={styles.buttonIcon} activeOpacity={0.1}>
+        <AntDesign name="team" size={25} color="black" />
       </TouchableOpacity>
     </View>
   </View>
@@ -50,13 +73,20 @@ const ListaGrupos = () => {
   const [groups, setGroups] = useState<any[]>([]);
 
   const URL = 'http://localhost:3000/';
+  const URLF = 'http://localhost:8081/';
 
   const handleNavegarHome = () => {
     navigation.navigate('Home');
   };
 
-  const handleNavegarConvite = (nomeGrupo: string) => {
-    navigation.navigate('Convites', { nome: nomeGrupo } as unknown as undefined);
+  const handleNavegarConvite = (nomeGrupo: string, groupId: string) => {
+    const inviteLink = `${URLF}Convites/${groupId}/${nomeGrupo}`;
+    navigation.navigate('Convites', { nome: nomeGrupo, groupId: groupId } as unknown as {nome:string, groupId:string});
+    console.log('Link de convite:', inviteLink);
+  };
+
+  const handleNavegarParticipantes = (groupId: string) => {
+    navigation.navigate('ListaParticipantes', { groupId });
   };
 
   const userLoggedIn = () => {
@@ -96,38 +126,28 @@ const ListaGrupos = () => {
     }
   }, [userDatail]);
 
-  /* const adicionarParticipanteGrupo = async (grupoUid: string, usuarioUid: string) => {
-    const groupRef = doc(db, 'groups', grupoUid);
-  
-    try {
-      await updateDoc(groupRef, {
-        participantes: arrayUnion(usuarioUid)
-      });
-      console.log('Usuário adicionado ao grupo com sucesso!');
-    } catch (error) {
-      console.error('Erro ao adicionar usuário ao grupo:', error);
-    }
-  }; */
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Lista de Grupos</Text>
 
       <FlatList
         data={groups}
-        renderItem={({ item }) => 
-          <GroupComponent 
-            nomeGrupo={item.nome} 
-            descricao={item.descricao} 
-            dataRevelacao={item.dataRevelacao} 
-            qtdMax={item.qtdMax} 
-            handleNavegarConvite={handleNavegarConvite} 
+        renderItem={({ item }) => (
+          <GroupComponent
+            groupId={item.groupId}
+            nomeGrupo={item.nome}
+            descricao={item.descricao}
+            dataRevelacao={item.dataRevelacao}
+            qtdMax={item.qtdMax}
+            handleNavegarConvite={handleNavegarConvite}
             nomeDoGrupo={item.nome}
+            image={item.image}
+            handleNavegarParticipantes={handleNavegarParticipantes}
           />
-        }
+        )}
         keyExtractor={(item) => item.id.toString()}
       />
-      
+
       <TouchableOpacity onPress={handleNavegarHome} style={styles.button} activeOpacity={0.1}>
         <Text style={styles.buttonText}>Home</Text>
       </TouchableOpacity>
@@ -151,7 +171,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   nomeGrupocontainer: {
-    width: '70%', 
+    width: '70%',
     minWidth: 350,
     height: 120,
     borderColor: '#D3A46F',

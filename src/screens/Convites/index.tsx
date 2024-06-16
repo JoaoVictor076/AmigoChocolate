@@ -1,21 +1,27 @@
 
 import { useNavigation, RouteProp  } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, TextInput, View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import { StackTypes } from '../../routes/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios'
 import { Title } from '../Login/style';
-import Details from '../Details';
 
 type ParamsType = {
   Convites: {
     nome: string;
+    groupId: string;
   },
 }
 
+const URL = 'http://localhost:3000/';
+
 const Convites = ({route} : {route: RouteProp<ParamsType, 'Convites'>}) => {
-  
+  const [userUid, setUserUid] = useState('')
+  const [nome, setNome] = useState()
+
   const navigation = useNavigation<StackTypes>();
-  
+
   const handleHome = () => {
     navigation.navigate('Home');
   }
@@ -23,13 +29,44 @@ const Convites = ({route} : {route: RouteProp<ParamsType, 'Convites'>}) => {
     navigation.navigate('ListaGrupos');
   }
 
+  const handleAcceptInvite = async () =>{
+    try {
+      const response = await axios.post(`${URL}groups/addParticipant`, {
+        groupId: route.params.groupId,
+        userUid: userUid,
+      });
+
+      if(response.status === 200){
+        console.log('Sucesso, você entrou no grupo! ', response.data);
+        handleListaGrupos();
+      } else {
+        console.log('Erro ao entrar no grupo: ', response.data)
+      }
+    } catch (error) {
+      console.log('Erro catch: ', error);
+    }
+  }
+
+  function userLoggedIn(){
+    AsyncStorage.getItem('@user').then((value) => {
+      if (value !== null) {
+        const user = JSON.parse(value)
+        setUserUid(user.uid)
+      }
+    });
+  }
+
+  useEffect(()=>{
+    userLoggedIn()
+  }, [])
+
   return (
     <View style={styles.container}>
       <View style = {styles.styleView}>
         <Text  style = {styles.title}> Convite</Text>
         <Text  style = {styles.title}> Você foi convidado a entrar no grupo {route.params.nome}</Text>
       </View> 
-      <TouchableOpacity onPress={handleListaGrupos} style={styles.button} activeOpacity={0.1}>
+      <TouchableOpacity onPress={handleAcceptInvite} style={styles.button} activeOpacity={0.1}>
         <Text style={styles.buttonText}>Aceitar</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleHome} style={styles.button} activeOpacity={0.1}>

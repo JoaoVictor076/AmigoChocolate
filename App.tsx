@@ -7,7 +7,7 @@ import StackComponent from '../AmigoChocolate/src/routes/stack';
 export default function App() {
 
   return (
-   <StackComponent />
+    <StackComponent />
   );
 }
 
