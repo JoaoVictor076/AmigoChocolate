@@ -59,7 +59,8 @@ export default function StackComponent(){
                 options={{headerShown: false }} 
                 initialParams={{ groupId: '', nome: '' }} 
                 />
-                <Stack.Screen name="ListaParticipantes" 
+                <Stack.Screen 
+                name="ListaParticipantes" 
                 component={ListaParticipantes} 
                 options={{ headerShown: false }} 
                 initialParams={{ groupId: ''}} 

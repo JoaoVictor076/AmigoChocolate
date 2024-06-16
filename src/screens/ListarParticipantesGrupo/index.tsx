@@ -1,28 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
-import { useNavigation, RouteProp } from '@react-navigation/native';
+import { useNavigation, RouteProp  } from '@react-navigation/native';
 import { StackTypes } from '../../routes/stack';
 import axios from 'axios';
 
-type RootStackParamList = {
-  ListaParticipantes: { groupId: string };
-};
+type ParamsType = {
+  ListaParticipantes: {
+    groupId: string;
+  },
+}
 
-type ListaParticipantesRouteProp = RouteProp<RootStackParamList, 'ListaParticipantes'>;
+const URL = 'http://localhost:3000/';
 
-type Props = {
-  route: ListaParticipantesRouteProp;
-};
-
-const ListaParticipantes: React.FC<Props> = ({ route }) => {
-  const { groupId } = route.params;
+const ListaParticipantes = ({route} : {route: RouteProp<ParamsType, 'ListaParticipantes'>}) => {
+  const groupId = route.params.groupId
   const [participants, setParticipants] = useState<any[]>([]);
   const navigation = useNavigation<StackTypes>();
 
   useEffect(() => {
     const fetchParticipants = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/groups/getParticipants/${groupId}`);
+        const response = await axios.post(`${URL}groups/getParticipants`, {groupId});
         if (response.status === 200) {
           setParticipants(response.data);
         } else {
@@ -48,10 +46,6 @@ const ListaParticipantes: React.FC<Props> = ({ route }) => {
         keyExtractor={(item) => item.userId}
         renderItem={({ item }) => (
           <View style={styles.participantContainer}>
-            <Image
-              style={styles.imageStyle}
-              source={{ uri: item.image }} 
-            />
             <View style={styles.participantInfo}>
               <Text style={styles.participantName}>{item.nome}</Text>
               <Text style={styles.participantEmail}>{item.email}</Text>
@@ -84,7 +78,7 @@ const styles = StyleSheet.create({
   participantContainer: {
     width: '70%',
     minWidth: 350,
-    height: 120,
+    height: 60,
     borderColor: '#D3A46F',
     backgroundColor: '#f8dcff',
     borderWidth: 1,
@@ -102,7 +96,7 @@ const styles = StyleSheet.create({
     width: '70%',
     textAlign: 'left',
     color: '#5C3A21',
-    height: 120,
+    height: 60,
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',

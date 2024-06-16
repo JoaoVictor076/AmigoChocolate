@@ -108,8 +108,12 @@ const  CriarGrupo=()=> {
       setRevelacaoConsole('Aquela data já faz parte do passado; é hora de olhar para frente e escolher uma data futura.')
       regular = false
     }
-    if (descricao.length == 0 ){
-      setDescricaoConsole('A descrição não pode ser nula ')
+    if (descricao.length == 0){
+      setDescricaoConsole('A descrição não pode ser nula')
+      regular = false
+    }
+    if (descricao.length >= 50){
+      setDescricaoConsole('A descrição não precisa ser tão grande rsrs')
       regular = false
     }
 
